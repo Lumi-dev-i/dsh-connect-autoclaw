@@ -1,0 +1,5 @@
+# 注册 AutoClaw 模型 provider，不改动 profile 的默认模型。
+# 凭据、网关地址与模型目录都在运行时从本机 AutoClaw2 读取，无需单独登录。
+- insert:
+    - id: dsh-connect-autoclaw
+      name: dsh-connect-autoclaw

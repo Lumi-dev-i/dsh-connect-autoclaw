@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build lib/
+        run: node scripts/build.mjs
+      - name: Syntax check
+        run: |
+          for f in lib/*.js; do node --check "$f"; done
+      # lib/index.js import 了 @deepseek-ai/dsh-llm（DSH 运行时自带，npm 上有同名包）。
+      # smoke 只验证模块契约，装一个不-save 的副本来满足 import。
+      - name: Install runtime peer (no-save)
+        run: npm install --no-save --no-audit --no-fund @deepseek-ai/dsh-llm@latest
+      - name: "Smoke: module loads and exports contract"
+        run: |
+          node --input-type=module -e "
+            import { readFileSync } from 'node:fs';
+            let captured;
+            globalThis.window = { __ModuleLoader__: { load: (d) => { captured = d; } } };
+            const noop = () => {};
+            const react = { Fragment:'F', useState:noop, useEffect:noop, useRef:noop, useCallback:noop, createElement:(t,p,...c)=>({t,p,children:c}) };
+            const j = { jsx:(t,p)=>({t,p}), jsxs:(t,p)=>({t,p}) };
+            const req = (n) => n==='react'?react : n==='react/jsx-runtime'?j : n==='react-dom'?{createPortal:noop} : (()=>{throw new Error(n)})();
+            new Function('window','require', readFileSync('lib/client.js','utf8'))(globalThis.window, req);
+            const mod = captured.factory(req);
+            if (mod.name !== 'dsh-connect-autoclaw-client' || JSON.stringify(mod.inject) !== '[\"slots\"]') throw new Error('client contract broken');
+            const host = await import('./lib/index.js');
+            if (typeof host.apply !== 'function' || host.name !== 'dsh-connect-autoclaw') throw new Error('host contract broken');
+            console.log('contract ok');
+          "

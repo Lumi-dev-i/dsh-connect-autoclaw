@@ -1,0 +1,55 @@
+{
+  "name": "dsh-connect-autoclaw",
+  "displayName": "DSH Connect AutoClaw",
+  "description": "DSH 插件：把本机登录的 AutoClaw（智谱 GLM）接入为 LLM provider，附账户积分状态条",
+  "version": "0.3.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-llm": "*"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lumi-dev-i/dsh-connect-autoclaw.git"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "autoclaw",
+    "zhipu",
+    "glm",
+    "llm",
+    "plugin"
+  ]
+}
