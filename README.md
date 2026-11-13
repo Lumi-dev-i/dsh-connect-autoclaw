@@ -42,7 +42,7 @@
 
 ```
 AutoClaw                      ⟳ 刷新
-账户        192****1402
+账户        138****0000
 总积分      11,938（1.2w）
 即将到期    1,938 将于3天内到期
 更新于      04:31:07
@@ -56,6 +56,10 @@ AutoClaw                      ⟳ 刷新
 - 任何失败安静降级（保留旧值并标「缓存」），绝不打扰输入区
 
 ## 安装
+
+> ⚠️ 本插件**没有**发布到 npm registry。只从本仓库的
+> [Releases](https://github.com/Lumi-dev-i/dsh-connect-autoclaw/releases) 或本仓库源码安装；
+> `npm i dsh-connect-autoclaw` 装到的同名包与本项目无关。
 
 ### 方式一：下载 Release 包（推荐）
 
